@@ -1,0 +1,72 @@
+<head>
+<title>Numberline</title>
+<meta charset="utf-8"/>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.js"></script>
+<style>
+table, input{
+	width: 100%;
+	text-align: center;
+}
+td{
+	width: 25%;
+}
+line{
+	stroke: black;
+}
+</style>
+<script>
+var app = angular.module("myApp", []);
+app.controller('MainController', ['$scope', function($scope) {
+	$scope.start = 0;
+	$scope.bid = .25;
+	$scope.ask	= .75;
+	$scope.end = 1;
+	$scope.sw = 0.01;
+	$scope.height = 0.1;
+	$scope.adjustStrokeWidth = function(){
+		var diff = $scope.end - $scope.start;
+		
+		$scope.sw = diff/100;
+		$scope.height = diff/10;
+	}
+}]);
+</script>
+<body ng-app="myApp">
+	<div ng-controller="MainController">
+		<table border>
+			<tr>
+				<td>
+					Start
+				</td>
+				<td>
+					Bid
+				</td>
+				<td>
+					Ask
+				</td>
+				<td>
+					End
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="number" ng-model="start" ng-change="adjustStrokeWidth()">
+				</td>
+				<td>
+					<input type="number" ng-model="bid" ng-change="adjustStrokeWidth()">
+				</td>
+				<td>
+					<input type="number" ng-model="ask" ng-change="adjustStrokeWidth()">
+				</td>
+				<td>
+					<input type="number" ng-model="end" ng-change="adjustStrokeWidth()">
+				</td>
+			</tr>
+		</table>
+		<svg width="100%" height="80%"  viewbox="{{start}} 0 {{end-start}} {{height}}" style="stroke-width:{{sw}}">
+			<line x1="{{bid}}" y1="0" x2="{{bid}}" y2="{{height}}" style="stroke:green" />
+			<line x1="{{ask}}" y1="0" x2="{{ask}}" y2="{{height}}" style="stroke:red"/>
+			<line x1="{{start}}" y1="{{height/2}}" x2="{{end}}" y2="{{height/2}}" />
+		</svg>
+	</div>
+</body>
