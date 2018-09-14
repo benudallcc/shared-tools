@@ -57,16 +57,16 @@ app.controller('MainController', ['$scope', function($scope) {
 		$scope.unix = $scope.unixseconds*1000;
 		$scope.unixnano= $scope.unixseconds*1000000;
 		
-		$scope.date = new Date($scope.unixseconds);
-		$scope.time = new Date($scope.unixseconds);
+		$scope.date = new Date($scope.unix);
+		$scope.time = new Date($scope.unix);
 		$scope.nano = 0;
 	}
 	$scope.unixnano2 = function(){
 		$scope.unix = Number($scope.unixnano.toString().slice(0,-3))
 		$scope.unixseconds = Number($scope.unixnano.toString().slice(0,-6));
 		
-		$scope.date = new Date($scope.unixseconds);
-		$scope.time = new Date($scope.unixseconds);
+		$scope.date = new Date($scope.unix);
+		$scope.time = new Date($scope.unix);
 		$scope.nano = Number($scope.unixnano.toString().substr(-3,3));
 	}
 	$scope.date2 = function(){
