@@ -106,7 +106,7 @@ app.controller('MainController', ['$scope', function($scope) {
 		$scope.hex = hex;
 	}
 	$scope.hex2 = function(){
-		var hex = JSON.parse("["+$scope.hex.replace(/\s/g,",").replace(/(^,|,$)/g,"")+"]");
+		var hex = $scope.hex.replace(/\s/g,",").replace(/(^,|,$)/g,"").split(",");
 		var str = [];
 		var dec = [];
 		for(var h in hex){
@@ -148,7 +148,7 @@ app.controller('MainController', ['$scope', function($scope) {
 					<td>
 						<input type="date" ng-model="date" ng-change="date2()"><br>
 						<input type="time" ng-model="time" ng-change="date2()" step="0.001"><br>
-						<input type="number" ng-model="nano" ng-change="date2()">
+						<input type="number" ng-model="nano" ng-change="date2()" min=0 max=999>
 					</td>
 				</tr>
 				<tr>
@@ -156,7 +156,7 @@ app.controller('MainController', ['$scope', function($scope) {
 						Seconds
 					</td>
 					<td>
-						<input type="number" ng-model="unixseconds" ng-change="unixseconds2()">
+						<input type="number" ng-model="unixseconds" ng-change="unixseconds2()" min=0>
 					</td>
 				</tr>
 				<tr>
@@ -164,7 +164,7 @@ app.controller('MainController', ['$scope', function($scope) {
 						Unix
 					</td>
 					<td>
-						<input type="number" ng-model="unix" ng-change="unix2()">
+						<input type="number" ng-model="unix" ng-change="unix2()" min=0>
 					</td>
 				</tr>
 				<tr>
@@ -172,7 +172,7 @@ app.controller('MainController', ['$scope', function($scope) {
 						Nanoseconds
 					</td>
 					<td>
-						<input type="number" ng-model="unixnano" ng-change="unixnano2()">
+						<input type="number" ng-model="unixnano" ng-change="unixnano2()" min=0>
 					</td>
 				</tr>
 			</tbody>
