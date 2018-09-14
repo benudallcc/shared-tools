@@ -45,29 +45,29 @@ input[ng-model="date"],input[ng-model="time"],input[ng-model="nano"]{
 <script>
 var app = angular.module("myApp", []);
 app.controller('MainController', ['$scope', function($scope) {
+	$scope.unixms2 = function(){
+		$scope.unix = Number($scope.unixms.toString().slice(0,-3));
+		$scope.unixns= $scope.unixms*1000;
+		
+		$scope.date = new Date($scope.unixms);
+		$scope.time = new Date($scope.unixms);
+		$scope.nano = 0;
+	}
 	$scope.unix2 = function(){
-		$scope.unixseconds = Number($scope.unix.toString().slice(0,-3));
-		$scope.unixnano= $scope.unix*1000;
+		$scope.unixms = $scope.unix*1000;
+		$scope.unixns= $scope.unix*1000000;
 		
-		$scope.date = new Date($scope.unix);
-		$scope.time = new Date($scope.unix);
+		$scope.date = new Date($scope.unixms);
+		$scope.time = new Date($scope.unixms);
 		$scope.nano = 0;
 	}
-	$scope.unixseconds2 = function(){
-		$scope.unix = $scope.unixseconds*1000;
-		$scope.unixnano= $scope.unixseconds*1000000;
+	$scope.unixns2 = function(){
+		$scope.unixms = Number($scope.unixns.toString().slice(0,-3))
+		$scope.unix = Number($scope.unixns.toString().slice(0,-6));
 		
-		$scope.date = new Date($scope.unix);
-		$scope.time = new Date($scope.unix);
-		$scope.nano = 0;
-	}
-	$scope.unixnano2 = function(){
-		$scope.unix = Number($scope.unixnano.toString().slice(0,-3))
-		$scope.unixseconds = Number($scope.unixnano.toString().slice(0,-6));
-		
-		$scope.date = new Date($scope.unix);
-		$scope.time = new Date($scope.unix);
-		$scope.nano = Number($scope.unixnano.toString().substr(-3,3));
+		$scope.date = new Date($scope.unixms);
+		$scope.time = new Date($scope.unixms);
+		$scope.nano = Number($scope.unixns.toString().substr(-3,3));
 	}
 	$scope.date2 = function(){
 		var date = new Date($scope.date)
@@ -77,9 +77,9 @@ app.controller('MainController', ['$scope', function($scope) {
 		date.setSeconds(time.getSeconds());
 		date.setMilliseconds(time.getMilliseconds());
 		
-		$scope.unix = Number(date.valueOf());
-		$scope.unixseconds = Number(date.valueOf().toString().slice(0,-3));
-		$scope.unixnano = $scope.unix*1000 + $scope.nano
+		$scope.unixms = Number(date.valueOf());
+		$scope.unix = Number(date.valueOf().toString().slice(0,-3));
+		$scope.unixns = $scope.unixms*1000 + $scope.nano
 		
 	}
 	$scope.str2 = function(){
@@ -153,14 +153,6 @@ app.controller('MainController', ['$scope', function($scope) {
 				</tr>
 				<tr>
 					<td>
-						Seconds
-					</td>
-					<td>
-						<input type="number" ng-model="unixseconds" ng-change="unixseconds2()" min=0>
-					</td>
-				</tr>
-				<tr>
-					<td>
 						Unix
 					</td>
 					<td>
@@ -169,10 +161,18 @@ app.controller('MainController', ['$scope', function($scope) {
 				</tr>
 				<tr>
 					<td>
+						Milliseconds
+					</td>
+					<td>
+						<input type="number" ng-model="unixms" ng-change="unixms2()" min=0>
+					</td>
+				</tr>
+				<tr>
+					<td>
 						Nanoseconds
 					</td>
 					<td>
-						<input type="number" ng-model="unixnano" ng-change="unixnano2()" min=0>
+						<input type="number" ng-model="unixns" ng-change="unixns2()" min=0>
 					</td>
 				</tr>
 			</tbody>
