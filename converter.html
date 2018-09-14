@@ -1,0 +1,207 @@
+<title>Converter</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.js"></script>
+<style>
+table{
+	width: 100%;
+}
+th,td:first-child{
+	text-align: center;
+}
+th,td{
+	border: solid black;
+	border-width: 0;
+}
+th,td{
+	border-width: 10px 10px 2px 10px;
+}
+
+tr + tr td{
+	border-top-width: 0;
+}
+td + td, th + th{
+	border-left-width: 0;
+}
+tbody:last-child tr:last-child td{
+	border-bottom-width: 10px;
+}
+input,textarea{
+	height: 100%;
+	width: 100%;
+	border: none;
+}
+textarea{
+	height: 200px;
+}
+td:last-child{
+	width: 90%;
+}
+input::-webkit-clear-button{
+	-webkit-appearance: none;
+}
+input[ng-model="date"],input[ng-model="time"],input[ng-model="nano"]{
+	width: 150px;
+}
+</style>
+<script>
+var app = angular.module("myApp", []);
+app.controller('MainController', ['$scope', function($scope) {
+	$scope.unix2 = function(){
+		$scope.unixseconds = Number($scope.unix.toString().slice(0,-3));
+		$scope.unixnano= $scope.unix*1000;
+		
+		$scope.date = new Date($scope.unix);
+		$scope.time = new Date($scope.unix);
+		$scope.nano = 0;
+	}
+	$scope.unixseconds2 = function(){
+		$scope.unix = $scope.unixseconds*1000;
+		$scope.unixnano= $scope.unixseconds*1000000;
+		
+		$scope.date = new Date($scope.unixseconds);
+		$scope.time = new Date($scope.unixseconds);
+		$scope.nano = 0;
+	}
+	$scope.unixnano2 = function(){
+		$scope.unix = Number($scope.unixnano.toString().slice(0,-3))
+		$scope.unixseconds = Number($scope.unixnano.toString().slice(0,-6));
+		
+		$scope.date = new Date($scope.unixseconds);
+		$scope.time = new Date($scope.unixseconds);
+		$scope.nano = Number($scope.unixnano.toString().substr(-3,3));
+	}
+	$scope.date2 = function(){
+		var date = new Date($scope.date)
+		var time = new Date($scope.time);
+		date.setHours(time.getHours());
+		date.setMinutes(time.getMinutes());
+		date.setSeconds(time.getSeconds());
+		date.setMilliseconds(time.getMilliseconds());
+		
+		$scope.unix = Number(date.valueOf());
+		$scope.unixseconds = Number(date.valueOf().toString().slice(0,-3));
+		$scope.unixnano = $scope.unix*1000 + $scope.nano
+		
+	}
+	$scope.str2 = function(){
+		var dec = [];
+		var hex = [];
+		for(var s in $scope.str){
+			var d = $scope.str.charCodeAt(s);
+			dec.push(d);
+			hex.push(("0"+Number(d).toString(16)).substr(-2,2).toUpperCase());
+		}
+		$scope.dec = dec;
+		$scope.hex = hex;
+	}
+	$scope.dec2 = function(){
+		var dec = JSON.parse("["+$scope.dec.replace(/\s/g,",").replace(/(^,|,$)/g,"")+"]");
+		var str = [];
+		var hex = [];
+		for(var d in dec){
+			var s = String.fromCharCode(dec[d]);
+			str.push(s);
+			hex.push(("0"+Number(dec[d]).toString(16)).substr(-2,2).toUpperCase());
+		}
+		$scope.str = str.join("");
+		$scope.hex = hex;
+	}
+	$scope.hex2 = function(){
+		var hex = JSON.parse("["+$scope.hex.replace(/\s/g,",").replace(/(^,|,$)/g,"")+"]");
+		var str = [];
+		var dec = [];
+		for(var h in hex){
+			var d = parseInt(hex[h],16);
+			dec.push(d);
+			str.push(String.fromCharCode(d));
+		}
+		$scope.str = str.join("");
+		$scope.dec = dec;
+	}
+	$scope.date = new Date();
+	$scope.time = new Date();
+	$scope.nano = 000;
+	$scope.date2();
+	$scope.str="hello";
+	$scope.str2();
+}]);
+</script>
+<body ng-app="myApp">
+	<div ng-controller="MainController">
+		<table cellspacing=0>
+			<thead>
+				<tr>
+					<th>
+						Type
+					</th>
+					<th>
+						Input/Output
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>
+						Date<br>
+						Time<br>
+						Nano<br>
+					</td>
+					<td>
+						<input type="date" ng-model="date" ng-change="date2()"><br>
+						<input type="time" ng-model="time" ng-change="date2()" step="0.001"><br>
+						<input type="number" ng-model="nano" ng-change="date2()">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Seconds
+					</td>
+					<td>
+						<input type="number" ng-model="unixseconds" ng-change="unixseconds2()">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Unix
+					</td>
+					<td>
+						<input type="number" ng-model="unix" ng-change="unix2()">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Nanoseconds
+					</td>
+					<td>
+						<input type="number" ng-model="unixnano" ng-change="unixnano2()">
+					</td>
+				</tr>
+			</tbody>
+			<tbody>
+				<tr>
+					<td>
+						String
+					</td>
+					<td>
+						<textarea ng-model="str" ng-change="str2()"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Dec
+					</td>
+					<td>
+						<textarea ng-model="dec" ng-change="dec2()"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						Hex
+					</td>
+					<td>
+						<textarea ng-model="hex" ng-change="hex2()"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
