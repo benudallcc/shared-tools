@@ -1,0 +1,109 @@
+<title>Translator</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.js"></script>
+<style>
+table{
+	width: 100%;
+	text-align: center;
+}
+td{
+	width: 33%;
+}
+textarea{
+	width: 100%;
+	height: 500px;
+}
+</style>
+<script>
+var app = angular.module("myApp", []);
+app.controller('MainController', ['$scope', function($scope) {
+	$scope.pattern = "\\w+";
+	$scope.input = '"68","65","6C","6C","6F"';
+	$scope.dictionary = '\
+"CC": "Introducer",\n\
+"10": "Capabilites",\n\
+"11": "Subscribe",\n\
+"12": "Live",\n\
+"13": "Close",\n\
+"14": "Data",\n\
+"15": "Snapshot",\n\
+"16": "Refresh",\n\
+"18": "Coin Pair",\n\
+"19": "Capability bit flag",\n\
+"1A": "Exchange",\n\
+"1B": "Sequence",\n\
+"80": "BID",\n\
+"81": "ASK",\n\
+"82": "LAST",\n\
+"83": "Volume 24 hour",\n\
+"84": "Volume 30 day",\n\
+"85": "End to end",\n\
+"86": "Last Volume",\n\
+"87": "Position",\n\
+"88": "Amount",\n\
+"00": "Terminator"';
+	$scope.replace = function(){
+		var r = new RegExp($scope.pattern,"g");
+		$scope.input = $scope.input.replace(r,"$1");
+	}
+	
+	$scope.translate = function(){
+		var r = new RegExp($scope.pattern,"g");
+		var input;
+		input = $scope.input.match(r);
+		var dictionary = JSON.parse("{"+$scope.dictionary+"}");
+		var output = [];
+		for(i in input){
+			var x = input[i];
+			
+			if(dictionary[x] != undefined){
+				output.push({[x] : dictionary[x]});
+			}
+			else if(x > "21" && x < "80"){
+				var dec = parseInt(x,16)
+				var str = String.fromCharCode(dec);
+				output.push({[x] : str});
+			}
+			else{
+				output.push({[x] : "?"});
+			}
+		}
+		$scope.output = JSON.stringify(output).replace(/(^\[{|\}]$)/g,"").replace(/},{/g,",\n");
+	}
+	
+}]);
+</script>
+<body ng-app="myApp">
+	<div ng-controller="MainController">
+		<table border>
+			<tbody>
+				<tr>
+					<td>
+						Input
+						<br>
+						Pattern<input ng-model="pattern">
+						<button ng-click="replace()">Replace</button>
+					</td>
+					<td>
+						Dictionary
+					</td>
+					<td>
+						Output
+						<br>
+						<button ng-click="translate()">Translate</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<textarea ng-model="input"></textarea>
+					</td>
+					<td>
+						<textarea ng-model="dictionary"></textarea>
+					</td>
+					<td>
+						<textarea ng-model="output" readonly></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
